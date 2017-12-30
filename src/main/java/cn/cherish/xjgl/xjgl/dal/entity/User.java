@@ -1,9 +1,7 @@
 package cn.cherish.xjgl.xjgl.dal.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,9 +11,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "t_user")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Cacheable
 public class User implements java.io.Serializable {
 
     private static final long serialVersionUID = -3703091209635157421L;
@@ -45,8 +40,5 @@ public class User implements java.io.Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modified_time", nullable = false, length = 19)
     private Date modifiedTime;
-
-    @Column(name = "description", nullable=false, columnDefinition = "varchar(1024) default '' ")
-    private String description;
 
 }

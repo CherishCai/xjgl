@@ -48,7 +48,7 @@ public class BasicController extends ABaseController {
      */
     @GetMapping(value = "admin")
     public String admin(){
-        return "admin/datapanel";
+        return "admin/student/list";
     }
 
 	/**

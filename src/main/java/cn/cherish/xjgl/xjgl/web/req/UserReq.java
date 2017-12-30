@@ -16,8 +16,4 @@ public class UserReq implements java.io.Serializable {
 
     private String telephone;
 
-    private Integer active;
-
-    private String description;
-
 }
