@@ -10,10 +10,10 @@
 			//ajax配置为function,手动调用异步查询
 			"ajax" : function(data, callback, settings) {
 				//封装请求参数
-				var param = studentManage.getQueryCondition(data);
+				var param = scoreManage.getQueryCondition(data);
 				$.ajax({
 					type : "GET",
-					url : "/student/page",//TODO
+					url : "/score/page",//TODO
 					cache : false, //禁用缓存
 					data : param, //传入已封装的参数
 					dataType : "json",
@@ -44,11 +44,9 @@
 			    {
 					"data" : 'sno'
 				}, {
-					"data" : 'nickname'
+					"data" : 'num'
                 }, {
-                    "data" : 'statusStr'
-				}, {
-					"data" : 'registerDate'
+                    "data" : 'subjectStr'
 				},
 				CONSTANT.DATA_TABLES.COLUMN.OPERATION
 				],
@@ -70,7 +68,7 @@
         //重置
         $("#btn_reset").click(function(){
             $("#sno").val("");
-            $("#nickname").val("");
+            $("#subject").val("");
             oTable.draw();
         });
         //刷新
@@ -85,7 +83,7 @@
             }
             return;
         });
-        $("#nickname").keypress(function(e) {
+        $("#subject").keypress(function(e) {
             if(e.keyCode == 13) {
                 $("#btn_search").click();
             }
@@ -94,7 +92,7 @@
 	});
 
 	//表格的管理机制
-	var studentManage = {
+	var scoreManage = {
 		currentItem : null,//储存当前被选中的行
 		fuzzySearch : false,//是否模糊查询
 		getQueryCondition : function(data) {
@@ -112,12 +110,12 @@
 				param.orderDir = data.order[0].dir;
 			}
 			//组装查询参数
-			param.fuzzySearch = studentManage.fuzzySearch;
-			if (studentManage.fuzzySearch) {//模糊查询
+			param.fuzzySearch = scoreManage.fuzzySearch;
+			if (scoreManage.fuzzySearch) {//模糊查询
 				param.fuzzy = $("#fuzzy-search").val();
 			} else {//非模糊查询
                 param.sno = $("#sno").val();
-                param.nickname = $("#nickname").val();
+                param.subject = $("#subject").val();
 			}
 			//组装分页参数
 			param.startIndex = data.start;
@@ -132,7 +130,7 @@
 	 //新增行
     $('#otable_new').on('click', function (e) {
         e.preventDefault();
-        var url = "/student/add";
+        var url = "/score/add";
         window.open(url, "_self");
     });
 
@@ -145,7 +143,7 @@
 
         myConfirm("你确定要删除吗?",function(){
             //向服务器提交删除请求
-            var url = "/student/"+id+"/delete";
+            var url = "/score/"+id+"/delete";
             var result = delAjax(url);
 
             if(result.success){
@@ -165,6 +163,6 @@
         /* Get the row as a parent of the link that was clicked on */
         var nRow = $(this).parents('tr')[0];
         var id = oTable.row(nRow).id();
-        var url = "/student/" + id + "/update";
+        var url = "/score/" + id + "/update";
         window.open(url, "_self");
     });

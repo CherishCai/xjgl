@@ -1,6 +1,7 @@
 package cn.cherish.xjgl.xjgl.service;
 
 import cn.cherish.xjgl.xjgl.common.enums.ErrorCode;
+import cn.cherish.xjgl.xjgl.common.enums.StudentStatusEnum;
 import cn.cherish.xjgl.xjgl.common.exception.ServiceException;
 import cn.cherish.xjgl.xjgl.dal.entity.Student;
 import cn.cherish.xjgl.xjgl.dal.repository.IBaseDAO;
@@ -10,6 +11,7 @@ import cn.cherish.xjgl.xjgl.web.dto.StudentDTO;
 import cn.cherish.xjgl.xjgl.web.req.BasicSearchReq;
 import cn.cherish.xjgl.xjgl.web.req.StudentReq;
 import cn.cherish.xjgl.xjgl.web.req.StudentSearchReq;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -66,26 +68,18 @@ public class StudentService extends ABaseService<Student, Long> {
         if (ObjectConvertUtil.objectFieldIsBlank(studentSearchReq)){
             log.debug("没有特定搜索条件的");
             List<Student> studentList = studentDAO.listAllPaged(pageRequest);
-            List<StudentDTO> CustomerDTOList = studentList.stream().map(source -> {
-                StudentDTO studentDTO = new StudentDTO();
-                ObjectConvertUtil.objectCopy(studentDTO, source);
-                return studentDTO;
-            }).collect(Collectors.toList());
+            List<StudentDTO> customerdtolist = studentList.stream().map(this::getStudentDTO).collect(Collectors.toList());
 
             //为了计算总数使用缓存，加快搜索速度
             Long count = getCount();
-            return new PageImpl<>(CustomerDTOList, pageRequest, count);
+            return new PageImpl<>(customerdtolist, pageRequest, count);
         }
 
         //有了其它搜索条件
         Page<Student> studentPage = super.findAllBySearchParams(
                 buildSearchParams(studentSearchReq), pageNumber, basicSearchReq.getPageSize());
 
-        return studentPage.map(source -> {
-            StudentDTO studentDTO = new StudentDTO();
-            ObjectConvertUtil.objectCopy(studentDTO, source);
-            return studentDTO;
-        });
+        return studentPage.map(this::getStudentDTO);
     }
 
     @Transactional
@@ -96,7 +90,6 @@ public class StudentService extends ABaseService<Student, Long> {
         ObjectConvertUtil.objectCopy(student, studentReq);
         student.setModifiedTime(new Date());
         this.update(student);
-
     }
 
     /**
@@ -114,6 +107,13 @@ public class StudentService extends ABaseService<Student, Long> {
         student.setCreatedTime(new Date());
         student.setModifiedTime(new Date());
         return save(student);
+    }
+
+    private StudentDTO getStudentDTO(Student source) {
+        StudentDTO studentDTO = new StudentDTO();
+        ObjectConvertUtil.objectCopy(studentDTO, source);
+        studentDTO.setStatusStr(StudentStatusEnum.getDesc(studentDTO.getStatus()));
+        return studentDTO;
     }
 
 }

@@ -1,15 +1,14 @@
 package cn.cherish.xjgl.xjgl.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-
 import java.util.Date;
+import lombok.Data;
 
 /**
  * Created by Cherish on 2017/2/17.
  */
 @Data
-public class StudentDTO implements java.io.Serializable {
+public class ScoreDTO implements java.io.Serializable {
 
     private static final long serialVersionUID = -3859558785433931029L;
 
@@ -17,14 +16,11 @@ public class StudentDTO implements java.io.Serializable {
 
     private String sno;
 
-    private String nickname;
+    private Float num;
 
-    private Integer status;
+    private Integer subject;
 
-    private String statusStr;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone = "GMT+8")
-    private Date registerDate;
+    private String subjectStr;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createdTime;

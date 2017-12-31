@@ -1,17 +1,22 @@
 package cn.cherish.xjgl.xjgl.dal.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-
-import javax.persistence.*;
-import java.util.Date;
-
 import static javax.persistence.GenerationType.IDENTITY;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import lombok.Data;
+
 @Entity
-@Table(name = "t_student")
+@Table(name = "t_score")
 @Data
-public class Student implements java.io.Serializable {
+public class Score implements java.io.Serializable {
 
 	private static final long serialVersionUID = 2285174464789310329L;
 
@@ -25,30 +30,19 @@ public class Student implements java.io.Serializable {
     @Column(name = "sno", nullable = false, length = 32)
     private String sno;
     /**
-     * 昵称
+     * 成绩
      */
-    @Column(name = "nickname", nullable = false, length = 32)
-    private String nickname;
+    @Column(name = "num", nullable = false)
+    private Float num;
     /**
-     * 1:在校
-     * 2:毕业
-     * 3:休学
-     * 4:退学
+     * 学科
      */
-    @Column(name = "status", nullable = false, columnDefinition = "default 1")
-    private Integer status;
-
-    /**
-     * 注册时间
-     */
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone = "GMT+8")
-    @Temporal(TemporalType.DATE)
-    @Column(name = "register_date")
-    private Date registerDate;
+    @Column(name = "subject", nullable = false)
+    private Integer subject;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_time", nullable = false, length = 19)
+    @Column(name = "created_time", length = 19)
     private Date createdTime;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>xjgl</name>
-	<description>Demo project for Spring Boot</description>
+	<description>学籍管理系统</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

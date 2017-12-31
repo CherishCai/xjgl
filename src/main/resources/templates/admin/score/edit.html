@@ -6,16 +6,16 @@
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="author" content="Cherish">
-    <title>添加学生</title>
+    <title>更改成绩信息</title>
 </head>
 <body>
 <div layout:fragment="content">
     <!-- page heading start-->
     <div class="page-heading">
-        <h3>添加学生</h3>
+        <h3>更改成绩信息</h3>
         <ul class="breadcrumb">
-            <li><a href="/student">学生管理</a></li>
-            <li class="active"> 新增学生 </li>
+            <li><a href="/score">成绩管理</a></li>
+            <li class="active"> 更改成绩信息 </li>
         </ul>
     </div>
     <!-- page heading end-->
@@ -28,15 +28,17 @@
                 <section class="panel">
                     <div class="panel-body">
                         <div class=" form">
-                            <form class="cmxform form-horizontal adminex-form" id="studentForm"
-                                  method="post" th:action="@{/student/save}" >
+                            <form class="cmxform form-horizontal adminex-form" id="scoreForm"
+                                  method="post" th:action="@{/score/update}">
+
+                                <input type="hidden" name="id" th:value="${score} ? ${score.id}"/>
 
                                 <div class="form-group">
                                     <label for="sno" class="control-label col-md-2 col-sm-2">学号:</label>
                                     <div class="col-md-8 col-sm-8">
                                         <input id="sno" name="sno" class="form-control"
                                                placeholder="学号" minlength="1" maxlength="32" required
-                                               th:value="${student} ? ${student.sno}" />
+                                               th:value="${score} ? ${score.sno}" />
                                         <p class="help-block">
                                             <label class="error-label"
                                                    th:text="${errorMap} ? ${errorMap['sno']}"></label>
@@ -45,40 +47,27 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="nickname" class="control-label col-md-2 col-sm-2">姓名:</label>
+                                    <label for="num" class="control-label col-md-2 col-sm-2">成绩:</label>
                                     <div class="col-md-8 col-sm-8">
-                                        <input type="text" id="nickname" name="nickname" class="form-control"
-                                               placeholder="姓名" minlength="1" maxlength="16" required
-                                               th:value="${student} ? ${student.nickname}" />
+                                        <input type="number" id="num" name="num" class="form-control"
+                                               placeholder="成绩" min="0" max="100" required
+                                               th:value="${score} ? ${score.num}" />
                                         <p class="help-block">
                                             <label class="error-label"
-                                                   th:text="${errorMap} ? ${errorMap['nickname']}"></label>
+                                                   th:text="${errorMap} ? ${errorMap['num']}"></label>
                                         </p>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="registerDate" class="control-label col-md-2 col-sm-2">注册时间:</label>
+                                    <label for="subject" class="control-label col-md-2 col-sm-2">学科:</label>
                                     <div class="col-md-8 col-sm-8">
-                                        <input type="date" id="registerDate" name="registerDate" class="form-control"
-                                               placeholder="注册时间" required
-                                               th:value="${student} ? ${student.registerDate}" />
-                                        <p class="help-block">
-                                            <label class="error-label"
-                                                   th:text="${errorMap} ? ${errorMap['registerDate']}"></label>
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="status" class="control-label col-md-2 col-sm-2">状态:</label>
-                                    <div class="col-md-8 col-sm-8">
-                                        <select id="status" name="status" class="form-control"
-                                                th:value="${student} ? ${student.status}">
-                                            <option value="1">在校</option>
-                                            <option value="2">毕业</option>
-                                            <option value="3">休学</option>
-                                            <option value="4">退学</option>
+                                        <select id="subject" name="subject" class="form-control"
+                                                th:value="${score} ? ${score.subject}">
+                                            <option value="1" th:attr="selected=(${score.subject} eq 1)">高等代数</option>
+                                            <option value="2" th:attr="selected=(${score.subject} eq 2)">数学分析</option>
+                                            <option value="3" th:attr="selected=(${score.subject} eq 3)">解析几何</option>
+                                            <option value="4" th:attr="selected=(${score.subject} eq 4)">计算机</option>
                                         </select>
                                     </div>
                                 </div>
@@ -116,7 +105,7 @@
             $('.custom-nav .nav-active').removeClass('nav-active');
             $('.custom-nav .active').removeClass('active');
             $("#studentMenu").addClass("nav-active");
-            $("#studentLi").addClass("active");
+            $("#scoreLi").addClass("active");
         });
     </script>
     <p class="msg-block" th:if="${errorMap}">
