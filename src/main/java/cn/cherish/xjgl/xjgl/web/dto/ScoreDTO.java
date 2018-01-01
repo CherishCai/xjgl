@@ -16,6 +16,8 @@ public class ScoreDTO implements java.io.Serializable {
 
     private String sno;
 
+    private String sname;
+
     private Float num;
 
     private Integer subject;

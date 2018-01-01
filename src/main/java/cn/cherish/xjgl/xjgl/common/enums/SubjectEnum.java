@@ -34,4 +34,19 @@ public enum SubjectEnum {
                 return null;
         }
     }
+
+    public static SubjectEnum fromDesc(String subject) {
+        switch (subject) {
+            case "高等代数":
+                return GTDS;
+            case "数学分析":
+                return SXFX;
+            case "解析几何":
+                return JXJH;
+            case "计算机":
+                return JSJ;
+            default:
+                return GTDS;
+        }
+    }
 }

@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package cn.cherish.xjgl.xjgl.util;
 
 import org.apache.poi.hssf.usermodel.*;
@@ -38,18 +30,15 @@ public class ExcelUtil {
 
     /**
      * 读取97-2003格式
-     * @param filePath 文件路径
      * @throws IOException
      */
     @SuppressWarnings("rawtypes")
-    public static List<Map> readExcel2003(String filePath) throws IOException {
+    public static List<Map> readExcel2003(InputStream inputStream) throws IOException {
         //返回结果集
-        List<Map> valueList = new ArrayList<Map>();
-        FileInputStream fis = null;
+        List<Map> valueList = new ArrayList<>();
         try {
-            fis = new FileInputStream(filePath);
             @SuppressWarnings("resource")
-            HSSFWorkbook wookbook = new HSSFWorkbook(fis);    // 创建对Excel工作簿文件的引用
+            HSSFWorkbook wookbook = new HSSFWorkbook(inputStream);    // 创建对Excel工作簿文件的引用
             HSSFSheet sheet = wookbook.getSheetAt(0);    // 在Excel文档中，第一张工作表的缺省索引是0
             int rows = sheet.getPhysicalNumberOfRows();    // 获取到Excel文件中的所有行数­
             Map<Integer, String> keys = new HashMap<Integer, String>();
@@ -105,7 +94,7 @@ public class ExcelUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            fis.close();
+            inputStream.close();
         }
         return valueList;
     }

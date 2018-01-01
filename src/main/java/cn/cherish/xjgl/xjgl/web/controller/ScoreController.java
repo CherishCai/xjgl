@@ -9,8 +9,11 @@ import cn.cherish.xjgl.xjgl.web.dto.ScoreDTO;
 import cn.cherish.xjgl.xjgl.web.req.BasicSearchReq;
 import cn.cherish.xjgl.xjgl.web.req.ScoreReq;
 import cn.cherish.xjgl.xjgl.web.req.ScoreSearchReq;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -19,7 +22,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -142,6 +147,33 @@ public class ScoreController extends ABaseController {
         scoreService.save(scoreReq);
         errorMap.put("msg", "添加成功");
         return mv;
+    }
+
+    @PostMapping("/uploadExcel")
+    @ResponseBody
+    public MResponse upload(@RequestParam("excel") MultipartFile multipartFile,
+        String other, HttpServletRequest request) {
+        log.info("【文件上传】 other:{}", other);
+
+        if (!multipartFile.isEmpty()) {
+            try {
+                String originalFilename = multipartFile.getOriginalFilename();
+
+                if (!originalFilename.endsWith(".xls")) {
+                    return buildResponse(false, "请上传.xls文件", null);
+                }
+
+                InputStream is = multipartFile.getInputStream();
+
+                boolean result = scoreService.dealExcel(is);
+
+                return buildResponse(true, "录入成功", null);
+            } catch (IOException e) {
+                log.error("uploadExcel 解析出错 {}", e);
+                return buildResponse(false, "解析文件出错", null);
+            }
+        } // end if
+        return buildResponse(false, "没获取到文件", null);
     }
 
 }

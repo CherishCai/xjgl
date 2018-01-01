@@ -2,15 +2,21 @@ package cn.cherish.xjgl.xjgl.service;
 
 import cn.cherish.xjgl.xjgl.common.enums.SubjectEnum;
 import cn.cherish.xjgl.xjgl.dal.entity.Score;
+import cn.cherish.xjgl.xjgl.dal.entity.Student;
 import cn.cherish.xjgl.xjgl.dal.repository.IBaseDAO;
 import cn.cherish.xjgl.xjgl.dal.repository.ScoreDAO;
+import cn.cherish.xjgl.xjgl.dal.repository.StudentDAO;
+import cn.cherish.xjgl.xjgl.util.ExcelUtil;
 import cn.cherish.xjgl.xjgl.util.ObjectConvertUtil;
 import cn.cherish.xjgl.xjgl.web.dto.ScoreDTO;
 import cn.cherish.xjgl.xjgl.web.req.BasicSearchReq;
 import cn.cherish.xjgl.xjgl.web.req.ScoreReq;
 import cn.cherish.xjgl.xjgl.web.req.ScoreSearchReq;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,10 +30,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ScoreService extends ABaseService<Score, Long> {
 
     private final ScoreDAO scoreDAO;
+    private final StudentDAO studentDAO;
 
     @Autowired
-    public ScoreService(ScoreDAO scoreDAO) {
+    public ScoreService(ScoreDAO scoreDAO, StudentDAO studentDAO) {
         this.scoreDAO = scoreDAO;
+        this.studentDAO = studentDAO;
     }
 
     @Override
@@ -100,8 +108,49 @@ public class ScoreService extends ABaseService<Score, Long> {
     private ScoreDTO getScoreDTO(Score source) {
         ScoreDTO scoreDTO = new ScoreDTO();
         ObjectConvertUtil.objectCopy(scoreDTO, source);
+
+        Student bySno = studentDAO.findBySno(source.getSno());
+        scoreDTO.setSname(bySno.getNickname());
         scoreDTO.setSubjectStr(SubjectEnum.getDesc(scoreDTO.getSubject()));
         return scoreDTO;
     }
+
+    @Transactional
+    public boolean dealExcel(InputStream is) throws IOException {
+        List<Map> maps = ExcelUtil.readExcel2003(is);
+
+        maps.forEach(map -> {
+            String sno = (String) map.get("学号");
+            String subject = (String) map.get("学科");
+            Float num = Float.valueOf((String) map.get("成绩"));
+
+            SubjectEnum subjectEnum = SubjectEnum.fromDesc(subject);
+
+            Student bySno = studentDAO.findBySno(sno);
+            if (bySno != null) {
+
+                Score bySnoAndSubject = scoreDAO.findBySnoAndSubject(sno, subjectEnum.getSeq());
+                if (bySnoAndSubject != null) {
+                    // update
+                    bySnoAndSubject.setNum(num);
+                    bySnoAndSubject.setModifiedTime(new Date());
+                    this.update(bySnoAndSubject);
+                } else {
+                    // add
+                    Score score = new Score();
+                    score.setSno(sno);
+                    score.setNum(num);
+                    score.setSubject(subjectEnum.getSeq());
+                    score.setCreatedTime(new Date());
+                    score.setModifiedTime(new Date());
+
+                    this.save(score);
+                }
+
+            }
+        });
+        return true;
+    }
+
 
 }

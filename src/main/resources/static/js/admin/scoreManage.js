@@ -44,6 +44,8 @@
 			    {
 					"data" : 'sno'
 				}, {
+                    "data" : 'sname'
+                }, {
 					"data" : 'num'
                 }, {
                     "data" : 'subjectStr'
@@ -88,6 +90,14 @@
                 $("#btn_search").click();
             }
             return;
+        });
+
+        $("#btn_upload").click(function () {
+            if ($("#excel").val().length > 0) {
+                ajaxFileUpload();
+            } else {
+                alert("请选择Excel文件");
+            }
         });
 	});
 
@@ -166,3 +176,29 @@
         var url = "/score/" + id + "/update";
         window.open(url, "_self");
     });
+
+    function ajaxFileUpload() {
+        $.ajaxFileUpload(
+            {
+                url: '/score/uploadExcel', //用于文件上传的服务器端请求地址
+                type: 'post',
+                secureuri: false, //一般设置为false
+                fileElementId: 'excel', //文件上传空间的id属性  <input type="file" id="file" name="file" />
+                data : {
+                    other : "附带数据"
+                },
+                dataType: 'JSON', //返回值类型
+                success: function (data, status)  //服务器成功响应处理函数
+                {
+                    myModalSuccess(data);
+                    oTable.draw(false);
+
+                },
+                error: function (data, status, e)//服务器响应失败处理函数
+                {
+                    myModalFail(data);
+                }
+            }
+        );
+        return false;
+    }
